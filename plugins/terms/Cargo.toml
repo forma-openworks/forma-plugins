@@ -1,0 +1,13 @@
+[package]
+name = "terms"
+description = "Плагин Forma: подсказки терминов курса из Глоссария"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+forma-plugin-api.workspace = true

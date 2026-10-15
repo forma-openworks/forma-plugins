@@ -1,0 +1,4 @@
+[alias]
+# cargo xtask build terms — собрать плагин в target/fpl/terms (папку можно подключить в
+# режиме разработчика); cargo xtask pack terms — то же и упаковать в dist/terms.fpl.
+xtask = "run --quiet -p xtask --"

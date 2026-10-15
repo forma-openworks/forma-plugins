@@ -28,8 +28,9 @@ The first plugins serve a course on 3D graphics read in Holotype.
 | Plugin | What it adds |
 |---|---|
 | `plugins/studio-theme` | “Studio” themes, dark and light: neutral grey like the Blender viewport, so renders, textures and screenshots keep their true colors |
+| `plugins/terms` | Term hints: hover a term in a chapter and get a card from the vault's `Glossary.md` (`Глоссарий.md`): what it means, whether it is only a preview yet, where it was explained and where the course goes deeper. The first plugin with code |
 
-Coming next: term hints, blocks for the whole 3D pipeline, Myuri for the graphics course, a bridge to Blender, a reference board and a hotkey trainer.
+Coming next: blocks for the whole 3D pipeline, Myuri for the graphics course, a bridge to Blender, a reference board and a hotkey trainer.
 
 ### Installing
 
@@ -45,6 +46,17 @@ A plugin without code is just a folder. Pack it with the system `tar` (Windows 1
 tar --format zip -cf dist/studio-theme.fpl -C plugins/studio-theme forma-plugin.toml themes
 ```
 
+### Plugins with code
+
+Plugin code is a WebAssembly component (`wasm32-wasip2`) written in Rust against the SDK `forma-plugin-api` from Forma Core: implement the `Plugin` trait and call `register_plugin!`. The app runs it in a sandbox (wasmtime). The plugin sees only the files its `[permissions]` allow, and each call is limited in memory and time.
+
+```bash
+rustup target add wasm32-wasip2
+cargo xtask build terms   # into target/fpl/terms — load this folder in developer mode
+cargo xtask pack terms    # the same, packed into dist/terms.fpl
+cargo xtask pack all      # every plugin in plugins/
+```
+
 ---
 
 ## Русский
@@ -58,8 +70,9 @@ tar --format zip -cf dist/studio-theme.fpl -C plugins/studio-theme forma-plugin.
 | Плагин | Что добавляет |
 |---|---|
 | `plugins/studio-theme` | Темы «Студия», тёмная и светлая: нейтральный серый, как во viewport Blender, — цвета рендеров, текстур и скриншотов не искажаются |
+| `plugins/terms` | Подсказки терминов: наведи на term в главе — карточка из `Глоссарий.md` хранилища: что это, пока ли это только preview, где его объяснили и где курс разберёт его подробнее. Первый плагин с code |
 
-Дальше: подсказки терминов, блоки для всего 3D-pipeline, Мьюри для курса графики, мост к Blender, доска референсов и тренажёр горячих клавиш.
+Дальше: блоки для всего 3D-pipeline, Мьюри для курса графики, мост к Blender, доска референсов и тренажёр горячих клавиш.
 
 ### Как поставить
 
@@ -73,4 +86,15 @@ tar --format zip -cf dist/studio-theme.fpl -C plugins/studio-theme forma-plugin.
 
 ```bash
 tar --format zip -cf dist/studio-theme.fpl -C plugins/studio-theme forma-plugin.toml themes
+```
+
+### Плагины с code
+
+Code плагина — компонент WebAssembly (`wasm32-wasip2`) на Rust с SDK `forma-plugin-api` из Forma Core: реализовать trait `Plugin` и вызвать `register_plugin!`. Программа запускает его в песочнице (wasmtime). Плагин видит только файлы, разрешённые в `[permissions]`, а каждый вызов ограничен по памяти и времени.
+
+```bash
+rustup target add wasm32-wasip2
+cargo xtask build terms   # в target/fpl/terms — эту папку можно подключить в режиме разработчика
+cargo xtask pack terms    # то же и упаковать в dist/terms.fpl
+cargo xtask pack all      # все плагины из plugins/
 ```

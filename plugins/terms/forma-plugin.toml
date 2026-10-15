@@ -1,0 +1,20 @@
+[plugin]
+id = "terms"
+name = "Подсказки терминов"
+version = "0.1.0"
+authors = ["Мьюри", "Холо"]
+description = "Наведи на term в главе курса — подсказка из Глоссария: что это, где его объяснили и где разберут подробнее."
+license = "MIT"
+icon = "book"
+apps = ["holotype"]
+api = "^1.0"
+
+[permissions]
+files = ["vault:read"]
+
+[contributes]
+hovers = [{ id = "terms", title = "Термины курса" }]
+
+[code]
+wasm = "terms.wasm"
+activate = ["hover:terms"]
