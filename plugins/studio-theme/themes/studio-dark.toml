@@ -1,0 +1,83 @@
+# Studio Dark — тема «Студия» для курса по графике: нейтральный серый, как во viewport Blender.
+# Все серые строго нейтральные (R = G = B), без тёплого или холодного оттенка: рядом с ними
+# цвета рендеров, текстур и скриншотов видны такими, какие они есть. Акцент — оранжевый в
+# духе Blender, ссылки и подсказки — голубые, как выделение в его интерфейсе.
+
+[theme]
+name = "Studio Dark"
+id = "studio-dark"
+dark = true
+author = "Мьюри для Холо"
+
+[colors]
+bg = "#262626"
+"bg.panel" = "#1f1f1f"
+"bg.header" = "#232323"
+"bg.deep" = "#181818"
+"bg.elevated" = "#2e2e2e"
+"bg.hover" = "#353535"
+border = "#383838"
+text = "#e2e2e2"
+"text.muted" = "#a6a6a6"
+"text.faint" = "#717171"
+heading = "#f5f5f5"
+accent = "#e8913a"
+"accent.soft" = "alpha($accent, 18%)"
+"accent.text" = "#1a1a1a"
+selection = "alpha(#5680c2, 38%)"
+"selection.text" = "#ffffff"
+highlight = "#e8c14a3c"
+success = "#78c27a"
+warning = "#e8c14a"
+danger = "#e5644f"
+shadow = "#00000078"
+"editor.text" = "#dcdcdc"
+
+# Заметки
+"note.link" = "#7fb0e8"
+"note.link.unresolved" = "alpha($note.link, 55%)"
+"note.code.bg" = "#1d1d1d"
+"note.code.text" = "#dadada"
+"note.code.header" = "#232323"
+"note.code.border" = "#363636"
+"note.code.gutter" = "#5e5e5e"
+"note.code.tint" = "$accent"
+"note.inline-code.bg" = "#333333"
+"note.inline-code.text" = "#e2c4a2"
+"note.mark.bg" = "#e8c14a44"
+"note.tag.bg" = "alpha($accent, 16%)"
+"note.tag.text" = "lighten($accent, 18%)"
+"note.quote.bar" = "#6a6a6a"
+"note.kbd.bg" = "#383838"
+"note.kbd.border" = "#545454"
+"note.kbd.shadow" = "#161616"
+"note.badge.bg" = "#3a3a3a"
+"note.badge.text" = "#e6e6e6"
+"note.table.bg" = "#2a2a2a"
+"note.table.head" = "#222222"
+"note.table.line" = "#3a3a3a"
+"note.card.bg" = "#2b2b2b"
+"note.term.info" = "#7fb0e8"
+"note.term.hint" = "#8fd0c8"
+
+[syntax]
+comment = { color = "#858585", italic = true }
+keyword = "#e8913a"
+operator = "#c6c6c6"
+string = "#a6c97f"
+escape = "#d9a96c"
+number = "#73b4e8"
+function = "#8fc0ea"
+type = "#e6c46e"
+parameter = "#e3b38a"
+tag = "#e57a6a"
+attribute = "#e6c46e"
+preprocessor = "#b99be0"
+annotation = "#b99be0"
+punctuation = "#aeaeae"
+heading = { color = "#ffffff", bold = true }
+bold = { color = "#f0c27a", bold = true }
+italic = { color = "#e6a3c8", italic = true }
+inserted = "#8fc97a"
+deleted = "#e57a6a"
+raw = "#8fc0ea"

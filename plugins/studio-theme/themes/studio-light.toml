@@ -1,0 +1,86 @@
+# Studio Light — светлая пара «Студии»: нейтральный светло-серый, как лайтбокс для
+# референсов. Серые строго нейтральные (R = G = B); акцент темнее, чем у тёмной темы, чтобы
+# читался на светлом.
+
+[theme]
+name = "Studio Light"
+id = "studio-light"
+dark = false
+author = "Мьюри для Холо"
+
+[colors]
+bg = "#f3f3f3"
+"bg.panel" = "#e8e8e8"
+"bg.header" = "#ececec"
+"bg.deep" = "#d6d6d6"
+"bg.elevated" = "#fbfbfb"
+"bg.hover" = "#dedede"
+border = "#cfcfcf"
+text = "#202020"
+"text.muted" = "#555555"
+"text.faint" = "#8a8a8a"
+heading = "#0d0d0d"
+accent = "#c9661a"
+"accent.soft" = "alpha($accent, 14%)"
+"accent.text" = "#ffffff"
+selection = "alpha(#3f6fb8, 26%)"
+highlight = "#e8b4206e"
+success = "#2f8f3a"
+warning = "#a87a00"
+danger = "#c8402d"
+shadow = "#0000002a"
+"modal.backdrop" = "#00000040"
+# На светлом галочкам и кнопкам нужна рамка, иначе их не видно.
+"control.border" = "$border.strong"
+"segmented.bg" = "$bg.hover"
+"segmented.selected" = "#fbfbfb"
+"editor.text" = "#202020"
+
+# Заметки
+"note.link" = "#2f6db5"
+"note.link.unresolved" = "alpha($note.link, 59%)"
+"note.code.bg" = "#ebebeb"
+"note.code.text" = "#202020"
+"note.code.header" = "#e3e3e3"
+"note.code.border" = "#d2d2d2"
+"note.code.gutter" = "#9a9a9a"
+"note.code.tint" = "$accent"
+"note.inline-code.bg" = "#e4e4e4"
+"note.inline-code.text" = "#a8501a"
+"note.mark.bg" = "#f2cc4f8a"
+"note.tag.bg" = "alpha($accent, 12%)"
+"note.tag.text" = "darken($accent, 12%)"
+"note.quote.bar" = "#a8a8a8"
+"note.kbd.bg" = "#fbfbfb"
+"note.kbd.border" = "#c4c4c4"
+"note.kbd.shadow" = "#c4c4c4"
+"note.badge.bg" = "#e0e0e0"
+"note.badge.text" = "#333333"
+"note.table.bg" = "#f8f8f8"
+"note.table.head" = "#ececec"
+"note.table.line" = "#d9d9d9"
+"note.card.bg" = "#f8f8f8"
+"note.term.info" = "#2f6db5"
+"note.term.hint" = "#18707a"
+
+[syntax]
+comment = { color = "#7d7d7d", italic = true }
+keyword = "#b85a14"
+operator = "#4a4a4a"
+string = "#3d7f23"
+escape = "#8f5a1a"
+number = "#1f6fae"
+function = "#1d63a3"
+type = "#8a6400"
+parameter = "#9a5420"
+tag = "#b23a2a"
+attribute = "#8a6400"
+preprocessor = "#6b44c2"
+annotation = "#6b44c2"
+punctuation = "#5a5a5a"
+heading = { color = "#0d0d0d", bold = true }
+bold = { color = "#8a6400", bold = true }
+italic = { color = "#a33a78", italic = true }
+inserted = "#3d7f23"
+deleted = "#b23a2a"
+raw = "#1d63a3"

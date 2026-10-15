@@ -1,0 +1,12 @@
+[plugin]
+id = "studio-theme"
+name = "Студия"
+version = "1.0.0"
+authors = ["Мьюри", "Холо"]
+description = "Темы для курса по графике: нейтральный серый, как во viewport Blender, — цвета рендеров, текстур и скриншотов не искажаются. Тёмная и светлая."
+license = "MIT"
+icon = "palette"
+api = "^1.0"
+
+[contributes]
+themes = "themes"
