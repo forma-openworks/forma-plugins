@@ -29,8 +29,24 @@ The first plugins serve a course on 3D graphics read in Holotype.
 |---|---|
 | `plugins/studio-theme` | “Studio” themes, dark and light: neutral grey like the Blender viewport, so renders, textures and screenshots keep their true colors |
 | `plugins/terms` | Term hints: hover a term in a chapter and get a card from the vault's `Glossary.md` (`Глоссарий.md`): what it means, whether it is only a preview yet, where it was explained and where the course goes deeper. Also a “Glossary” panel with search, “Find in glossary” on selected text and a ```` ```terms ```` block with the cards of a chapter’s new terms. The first plugin with code |
+| `plugins/gfx-blocks` | Graphics blocks for notes: a pipeline map, a Blender-like node graph, before/after, a polygon budget, a PBR material card, a storyboard, a glTF viewer and a UV layout |
 
-Coming next: blocks for the whole 3D pipeline, Myuri for the graphics course, a bridge to Blender, a reference board and a hotkey trainer.
+Coming next: Myuri for the graphics course, a bridge to Blender, a reference board and a hotkey trainer.
+
+### Graphics blocks at a glance
+
+Each block is a fenced code block in a note; the toggle in its header shows the source.
+
+| Block | Write | Shows |
+|---|---|---|
+| ```` ```pipeline ```` | `Modeling: now — fuselage` per line (`done`, `now`, `next`, `skip`) | stages as a flow, what is done and what is next |
+| ```` ```nodes ```` | `Principled BSDF [shader]`, sockets `  > Roughness: float = 0.5` / `  < BSDF: shader`, links `A.Out -> B.In` | a node graph that looks like Blender's (colors from the Blender 5.3 sources), pan and Ctrl+wheel zoom |
+| ```` ```compare ```` | `before:`, `after:`, `labels: Before \| After` | two vault images with a draggable divider |
+| ```` ```budget ```` | `Budget: 8000 tris`, then `Fuselage: 4200` | parts of a triangle budget as one bar with the budget mark and a table |
+| ```` ```material ```` | `base color: #6b7350`, `metallic`, `roughness`, `emission`, `normal map: …` | a PBR ball (GGX, like Principled BSDF) with the parameters and maps |
+| ```` ```storyboard ```` | `## Takeoff · 4s`, an image path, `Camera: …`, a description | shots as cards and the running time |
+| ```` ```gltf ```` | `model: models/plane.glb`, `wireframe: true` | the model to orbit, with triangles, vertices, materials, UVs and size |
+| ```` ```uv ```` | `model: models/plane.glb`, optional `mesh: Fuselage` | the UV layout like Blender's UV editor: islands, used share of 0–1, points outside |
 
 ### Installing
 
@@ -71,8 +87,24 @@ cargo xtask pack all      # every plugin in plugins/
 |---|---|
 | `plugins/studio-theme` | Темы «Студия», тёмная и светлая: нейтральный серый, как во viewport Blender, — цвета рендеров, текстур и скриншотов не искажаются |
 | `plugins/terms` | Подсказки терминов: наведи на term в главе — карточка из `Глоссарий.md` хранилища: что это, пока ли это только preview, где его объяснили и где курс разберёт его подробнее. Ещё панель «Глоссарий» с поиском, «Найти в глоссарии» у выделенного текста и блок ```` ```terms ```` с карточками новых терминов главы. Первый плагин с code |
+| `plugins/gfx-blocks` | Блоки графики для заметок: карта pipeline, граф нод как в Blender, до и после, бюджет полигонов, карточка PBR-материала, storyboard, просмотр glTF и UV-раскладка |
 
-Дальше: блоки для всего 3D-pipeline, Мьюри для курса графики, мост к Blender, доска референсов и тренажёр горячих клавиш.
+Дальше: Мьюри для курса графики, мост к Blender, доска референсов и тренажёр горячих клавиш.
+
+### Блоки графики коротко
+
+Каждый блок — блок кода в заметке; переключатель в его шапке показывает исходник.
+
+| Блок | Как писать | Что показывает |
+|---|---|---|
+| ```` ```pipeline ```` | по этапу в строке: `Modeling: now — фюзеляж` (`done`, `now`, `next`, `skip`) | этапы цепочкой: что готово и что дальше |
+| ```` ```nodes ```` | `Principled BSDF [shader]`, сокеты `  > Roughness: float = 0.5` / `  < BSDF: shader`, связи `A.Out -> B.In` | граф нод, как в Blender (цвета из исходников Blender 5.3), двигается и приближается Ctrl и колесом |
+| ```` ```compare ```` | `before:`, `after:`, `labels: До \| После` | две картинки хранилища с ползунком |
+| ```` ```budget ```` | `Бюджет: 8000 tris`, потом `Фюзеляж: 4200` | части бюджета треугольников одной полосой с отметкой бюджета и таблицей |
+| ```` ```material ```` | `base color: #6b7350`, `metallic`, `roughness`, `emission`, `normal map: …` | шар PBR (GGX, как Principled BSDF) с параметрами и картами |
+| ```` ```storyboard ```` | `## Взлёт · 4s`, путь к картинке, `Камера: …`, описание | кадры карточками и общее время |
+| ```` ```gltf ```` | `model: models/plane.glb`, `wireframe: true` | модель, которую можно вращать, и её треугольники, вершины, материалы, UV, размеры |
+| ```` ```uv ```` | `model: models/plane.glb`, можно `mesh: Fuselage` | UV-раскладка, как в UV-редакторе Blender: острова, занятая доля 0–1, точки за квадратом |
 
 ### Как поставить
 

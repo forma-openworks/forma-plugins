@@ -1,0 +1,18 @@
+[package]
+name = "gfx-blocks"
+description = "Плагин Forma: блоки заметок для курса компьютерной графики — pipeline, ноды, до/после, бюджет полигонов, PBR-материал, storyboard, glTF, UV"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+forma-plugin-api.workspace = true
+serde_json = "1"
+# Модели glTF 2.0: разбор файла и чтение буферов (без загрузки файлов с диска — их даёт
+# программа через read-bytes).
+gltf = { version = "1.4", default-features = false, features = ["utils", "names"] }
+base64 = "0.22"

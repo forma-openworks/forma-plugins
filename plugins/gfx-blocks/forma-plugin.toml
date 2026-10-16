@@ -1,0 +1,29 @@
+[plugin]
+id = "gfx-blocks"
+name = "Блоки графики"
+version = "0.1.0"
+authors = ["Мьюри", "Холо"]
+description = "Блоки заметок для курса по графике: карта pipeline, граф нод как в Blender, до/после, бюджет полигонов, карточка PBR-материала, storyboard, просмотр glTF и UV-раскладка."
+license = "MIT"
+icon = "palette"
+apps = ["holotype"]
+api = "^1.0"
+
+[permissions]
+files = ["vault:read"]
+
+[contributes]
+blocks = [
+    { lang = "pipeline", title = "Pipeline" },
+    { lang = "nodes", title = "Ноды" },
+    { lang = "compare", title = "До и после" },
+    { lang = "budget", title = "Бюджет полигонов" },
+    { lang = "material", title = "Материал" },
+    { lang = "storyboard", title = "Storyboard" },
+    { lang = "gltf", title = "Модель" },
+    { lang = "uv", title = "UV-раскладка" },
+]
+
+[code]
+wasm = "gfx_blocks.wasm"
+activate = ["block:pipeline", "block:nodes", "block:compare", "block:budget", "block:material", "block:storyboard", "block:gltf", "block:uv"]
