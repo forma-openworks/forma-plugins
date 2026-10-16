@@ -81,6 +81,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "00d174d5400e5e8fd687ad1049e2f578285fa914201b1af7e8b112a4546bd826"
 
 [[package]]
+name = "example"
+version = "0.1.0"
+dependencies = [
+ "forma-plugin-api",
+]
+
+[[package]]
 name = "flate2"
 version = "1.1.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -98,7 +105,7 @@ checksum = "77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb"
 [[package]]
 name = "forma-plugin-api"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#42c1022a6c709e1499e59537c01821e93d45f4ee"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#80ea1dccc3d118fa70a6781f9b6e9e004ad9b767"
 dependencies = [
  "forma-plugin-ui",
  "serde",
@@ -109,7 +116,7 @@ dependencies = [
 [[package]]
 name = "forma-plugin-ui"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#42c1022a6c709e1499e59537c01821e93d45f4ee"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#80ea1dccc3d118fa70a6781f9b6e9e004ad9b767"
 dependencies = [
  "serde",
  "serde_json",
@@ -118,7 +125,7 @@ dependencies = [
 [[package]]
 name = "forma-plugins"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#42c1022a6c709e1499e59537c01821e93d45f4ee"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#80ea1dccc3d118fa70a6781f9b6e9e004ad9b767"
 dependencies = [
  "forma-settings",
  "log",
@@ -130,7 +137,7 @@ dependencies = [
 [[package]]
 name = "forma-settings"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#42c1022a6c709e1499e59537c01821e93d45f4ee"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#80ea1dccc3d118fa70a6781f9b6e9e004ad9b767"
 dependencies = [
  "dirs",
  "log",

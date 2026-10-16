@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["plugins/terms", "plugins/gfx-blocks", "xtask"]
+members = ["plugins/terms", "plugins/gfx-blocks", "plugins/example", "xtask"]
 
 [workspace.package]
 version = "0.1.0"

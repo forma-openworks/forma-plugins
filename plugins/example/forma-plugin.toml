@@ -1,0 +1,22 @@
+[plugin]
+id = "example"
+name = "Пример плагина"
+version = "0.1.0"
+authors = ["Мьюри", "Холо"]
+description = "Пример для авторов плагинов: панель, программа в фоне с выводом по строкам и остановкой, связанные папки хранилища, отметка пункта «Практики» и запись в заметку."
+license = "MIT"
+icon = "plugin"
+apps = ["holotype"]
+api = "^1.2"
+
+[permissions]
+process = ["ping"]
+files = ["vault:read", "vault:write", "linked:read"]
+
+[contributes]
+panels = [{ id = "demo", title = "Пример API", icon = "plugin" }]
+commands = [{ id = "example.open", title = "Открыть пример API" }]
+
+[code]
+wasm = "example.wasm"
+activate = ["panel:demo", "command:example.open"]
