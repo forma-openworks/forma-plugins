@@ -3,7 +3,7 @@ id = "terms"
 name = "Подсказки терминов"
 version = "0.1.0"
 authors = ["Мьюри", "Холо"]
-description = "Наведи на term в главе курса — подсказка из Глоссария: что это, где его объяснили и где разберут подробнее."
+description = "Наведи на term в главе курса — подсказка из Глоссария: что это, где его объяснили и где разберут подробнее. Панель «Глоссарий» с поиском и блок ```terms для списка терминов главы."
 license = "MIT"
 icon = "book"
 apps = ["holotype"]
@@ -14,7 +14,11 @@ files = ["vault:read"]
 
 [contributes]
 hovers = [{ id = "terms", title = "Термины курса" }]
+blocks = [{ lang = "terms", title = "Термины" }]
+commands = [{ id = "terms.find", title = "Найти в глоссарии" }]
+menus = [{ where = "selection", command = "terms.find" }]
+panels = [{ id = "glossary", title = "Глоссарий", icon = "book" }]
 
 [code]
 wasm = "terms.wasm"
-activate = ["hover:terms"]
+activate = ["hover:terms", "block:terms", "command:terms.find", "panel:glossary"]

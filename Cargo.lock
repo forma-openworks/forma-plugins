@@ -86,17 +86,27 @@ checksum = "77ce24cb58228fbb8aa041425bb1050850ac19177686ea6e0f41a70416f56fdb"
 [[package]]
 name = "forma-plugin-api"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#fa011380f2a72564812c21e07eb79d00e35cf9e9"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#ad1df8ceb5432139a77a918d1313b97c734770a0"
 dependencies = [
+ "forma-plugin-ui",
  "serde",
  "serde_json",
  "wit-bindgen",
 ]
 
 [[package]]
+name = "forma-plugin-ui"
+version = "0.1.0"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#ad1df8ceb5432139a77a918d1313b97c734770a0"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "forma-plugins"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#fa011380f2a72564812c21e07eb79d00e35cf9e9"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#ad1df8ceb5432139a77a918d1313b97c734770a0"
 dependencies = [
  "forma-settings",
  "log",
@@ -108,7 +118,7 @@ dependencies = [
 [[package]]
 name = "forma-settings"
 version = "0.1.0"
-source = "git+https://github.com/forma-openworks/forma-core?branch=main#fa011380f2a72564812c21e07eb79d00e35cf9e9"
+source = "git+https://github.com/forma-openworks/forma-core?branch=main#ad1df8ceb5432139a77a918d1313b97c734770a0"
 dependencies = [
  "dirs",
  "log",

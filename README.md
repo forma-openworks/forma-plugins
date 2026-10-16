@@ -28,7 +28,7 @@ The first plugins serve a course on 3D graphics read in Holotype.
 | Plugin | What it adds |
 |---|---|
 | `plugins/studio-theme` | “Studio” themes, dark and light: neutral grey like the Blender viewport, so renders, textures and screenshots keep their true colors |
-| `plugins/terms` | Term hints: hover a term in a chapter and get a card from the vault's `Glossary.md` (`Глоссарий.md`): what it means, whether it is only a preview yet, where it was explained and where the course goes deeper. The first plugin with code |
+| `plugins/terms` | Term hints: hover a term in a chapter and get a card from the vault's `Glossary.md` (`Глоссарий.md`): what it means, whether it is only a preview yet, where it was explained and where the course goes deeper. Also a “Glossary” panel with search, “Find in glossary” on selected text and a ```` ```terms ```` block with the cards of a chapter’s new terms. The first plugin with code |
 
 Coming next: blocks for the whole 3D pipeline, Myuri for the graphics course, a bridge to Blender, a reference board and a hotkey trainer.
 
@@ -70,7 +70,7 @@ cargo xtask pack all      # every plugin in plugins/
 | Плагин | Что добавляет |
 |---|---|
 | `plugins/studio-theme` | Темы «Студия», тёмная и светлая: нейтральный серый, как во viewport Blender, — цвета рендеров, текстур и скриншотов не искажаются |
-| `plugins/terms` | Подсказки терминов: наведи на term в главе — карточка из `Глоссарий.md` хранилища: что это, пока ли это только preview, где его объяснили и где курс разберёт его подробнее. Первый плагин с code |
+| `plugins/terms` | Подсказки терминов: наведи на term в главе — карточка из `Глоссарий.md` хранилища: что это, пока ли это только preview, где его объяснили и где курс разберёт его подробнее. Ещё панель «Глоссарий» с поиском, «Найти в глоссарии» у выделенного текста и блок ```` ```terms ```` с карточками новых терминов главы. Первый плагин с code |
 
 Дальше: блоки для всего 3D-pipeline, Мьюри для курса графики, мост к Blender, доска референсов и тренажёр горячих клавиш.
 

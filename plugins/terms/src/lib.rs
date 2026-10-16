@@ -3,9 +3,16 @@
 //! «Подробно —» реестра `terms.md` курса, если он есть в служебной папке вроде
 //! `.model-kit/` или `.rust-project/`).
 //!
+//! Ещё плагин даёт:
+//! - панель «Глоссарий»: поиск по терминам и карточка выбранного с переходом к главе;
+//! - пункт меню выделенного текста «Найти в глоссарии» — открывает панель на этом term;
+//! - блок ` ```terms ` — карточки терминов, по одному в строке (например, «Новые термины»
+//!   в конце главы).
+//!
 //! Формат Глоссария — как в курсах: `- **term** — определение. *preview* → [[глава#раздел]]`.
 
-use forma_plugin_api::{Context, HoverRequest, HoverResult, Plugin, host, register_plugin};
+use forma_plugin_api::ui::{self, Element, Event, EventKind, Item, Tone};
+use forma_plugin_api::{CommandContext, Context, HoverRequest, HoverResult, PanelContext, Plugin, host, register_plugin};
 
 /// Файлы глоссария, которые ищет плагин (в корне хранилища).
 const GLOSSARIES: [&str; 2] = ["Глоссарий.md", "Glossary.md"];
@@ -112,7 +119,12 @@ pub fn find<'a>(terms: &'a [Term], text: &str, offset: usize) -> Option<(&'a Ter
 
 /// Текст подсказки (markdown).
 pub fn card(term: &Term, english: bool) -> String {
-    let mut md = format!("**{}** — {}", term.title, term.definition);
+    format!("**{}** — {}", term.title, card_body(term, english))
+}
+
+/// Карточка без названия (у блока и панели оно в заголовке группы).
+pub fn card_body(term: &Term, english: bool) -> String {
+    let mut md = term.definition.clone();
     if term.preview {
         md.push_str(if english { "\n\n*Preview: explained in full later.*" } else { "\n\n*Пока preview: подробно разберут позже.*" });
     }
@@ -127,11 +139,40 @@ pub fn card(term: &Term, english: bool) -> String {
     md
 }
 
+/// Term по написанию: точно (без регистра и обратных кавычек) по любому варианту.
+pub fn lookup<'a>(terms: &'a [Term], name: &str) -> Option<&'a Term> {
+    let keys = keys_of(name.trim());
+    terms.iter().find(|t| keys.iter().any(|k| t.keys.contains(k)))
+}
+
+/// Подходит ли term под строку поиска: по названию и определению, без регистра.
+pub fn matches(term: &Term, query: &str) -> bool {
+    let q = query.trim().to_lowercase();
+    q.is_empty() || term.keys.iter().any(|k| k.contains(&q)) || term.definition.to_lowercase().contains(&q)
+}
+
+/// Название без обратных кавычек — для списков.
+fn plain(title: &str) -> String {
+    title.replace('`', "")
+}
+
+/// Определение одной строкой для списка: без разметки, коротко.
+fn short(definition: &str) -> String {
+    let text: String = definition.replace(['`', '*'], "");
+    match text.char_indices().nth(90) {
+        Some((i, _)) => format!("{}…", text[..i].trim_end()),
+        None => text,
+    }
+}
+
 struct Terms {
     terms: Vec<Term>,
     /// Путь глоссария: на нём самом подсказки не нужны.
     glossary: Option<String>,
     english: bool,
+    /// Панель «Глоссарий»: строка поиска и выбранный term (его первый вариант написания).
+    query: String,
+    selected: Option<String>,
 }
 
 impl Terms {
@@ -162,11 +203,54 @@ impl Terms {
         self.terms.sort_by_key(|t| std::cmp::Reverse(t.keys.iter().map(|k| k.chars().count()).max().unwrap_or(0)));
         forma_plugin_api::log(forma_plugin_api::Level::Info, format!("{} terms loaded", self.terms.len()));
     }
+
+    fn tr<'a>(&self, ru: &'a str, en: &'a str) -> &'a str {
+        if self.english { en } else { ru }
+    }
+
+    fn selected_term(&self) -> Option<&Term> {
+        let key = self.selected.as_deref()?;
+        self.terms.iter().find(|t| t.keys.first().map(String::as_str) == Some(key))
+    }
+
+    /// Панель «Глоссарий»: поиск, список и карточка выбранного.
+    fn glossary_panel(&self) -> Element {
+        let mut children = vec![ui::search("query", self.query.clone(), self.tr("Найти term", "Find a term"))];
+        if self.glossary.is_none() {
+            children.push(ui::hint(self.tr("В хранилище нет Глоссария (Глоссарий.md или Glossary.md в корне).", "The vault has no glossary (Глоссарий.md or Glossary.md at its root).")));
+            return ui::column(children);
+        }
+        let found: Vec<&Term> = self.terms.iter().filter(|t| matches(t, &self.query)).collect();
+        let count = if self.english { format!("{} of {} terms", found.len(), self.terms.len()) } else { format!("Найдено: {} из {}", found.len(), self.terms.len()) };
+        children.push(ui::hint(count));
+        if let Some(t) = self.selected_term() {
+            let mut card = vec![ui::markdown(card_body(t, self.english))];
+            if let Some(link) = &t.link {
+                let text = if self.english { format!("Open «{}»", link.replace('#', " › ")) } else { format!("Открыть «{}»", link.replace('#', " › ")) };
+                card.push(Element::Button { id: "open".into(), text, icon: Some("link".into()), primary: false, enabled: true, tooltip: String::new(), command: None, args: Default::default() });
+            }
+            children.push(ui::group(plain(&t.title), card));
+        }
+        // По алфавиту: так ищут глазами, как в словаре.
+        let mut found = found;
+        found.sort_by_key(|t| plain(&t.title).to_lowercase());
+        let items: Vec<Item> = found
+            .iter()
+            .map(|t| Item {
+                detail: short(&t.definition),
+                badge: if t.preview { "preview".into() } else { String::new() },
+                tone: if t.preview { Tone::Muted } else { Tone::Normal },
+                ..ui::item(t.keys.first().cloned().unwrap_or_default(), plain(&t.title))
+            })
+            .collect();
+        children.push(ui::list("terms", items, self.selected.clone()));
+        ui::column(children)
+    }
 }
 
 impl Plugin for Terms {
     fn new(cx: Context) -> Result<Self, String> {
-        let mut t = Terms { terms: Vec::new(), glossary: None, english: cx.language.starts_with("en") };
+        let mut t = Terms { terms: Vec::new(), glossary: None, english: cx.language.starts_with("en"), query: String::new(), selected: None };
         if cx.root {
             t.load();
         }
@@ -177,6 +261,7 @@ impl Plugin for Terms {
         // Пустой список — поменяться могло что угодно (хранилище перечитали).
         if paths.is_empty() || paths.iter().any(|p| GLOSSARIES.iter().any(|g| p.ends_with(g)) || p.ends_with("terms.md")) {
             self.load();
+            host::refresh_panel("glossary");
         }
     }
 
@@ -186,6 +271,64 @@ impl Plugin for Terms {
         }
         let (term, start, end) = find(&self.terms, &req.text, req.offset as usize)?;
         Some(HoverResult { start: start as u32, end: end as u32, markdown: card(term, self.english) })
+    }
+
+    /// ` ```terms `: по term в строке — его карточка.
+    fn render_block(&mut self, _lang: &str, source: &str, _context: &str) -> Result<Element, String> {
+        let mut cards = Vec::new();
+        for name in source.lines().map(str::trim).filter(|l| !l.is_empty()) {
+            cards.push(match lookup(&self.terms, name) {
+                Some(t) => ui::group(plain(&t.title), [ui::markdown(card_body(t, self.english))]),
+                None => Element::Label {
+                    text: if self.english { format!("{name}: not in the glossary") } else { format!("{name}: нет в Глоссарии") },
+                    icon: Some("warning".into()),
+                    tone: Tone::Warning,
+                    size: ui::Size::Small,
+                    bold: false,
+                },
+            });
+        }
+        Ok(ui::column(cards))
+    }
+
+    /// «Найти в глоссарии»: панель открывается на выделенном term (или ищет его).
+    fn command(&mut self, id: &str, cx: &CommandContext) -> Result<String, String> {
+        if id != "terms.find" {
+            return Err(format!("unknown command {id}"));
+        }
+        let text = cx.selection.trim();
+        match lookup(&self.terms, text) {
+            Some(t) => {
+                self.selected = t.keys.first().cloned();
+                self.query.clear();
+            }
+            None => {
+                self.query = text.to_owned();
+                self.selected = None;
+            }
+        }
+        host::open_panel("glossary");
+        Ok(String::new())
+    }
+
+    fn render_panel(&mut self, panel: &str, _cx: &PanelContext) -> Result<Element, String> {
+        match panel {
+            "glossary" => Ok(self.glossary_panel()),
+            other => Err(format!("unknown panel {other}")),
+        }
+    }
+
+    fn panel_event(&mut self, _panel: &str, e: &Event) {
+        match (e.id.as_str(), e.kind) {
+            ("query", EventKind::Change | EventKind::Submit) => self.query = e.text().to_owned(),
+            ("terms", EventKind::Select | EventKind::Activate) => self.selected = Some(e.text().to_owned()),
+            ("open", EventKind::Click) => {
+                if let Some(link) = self.selected_term().and_then(|t| t.link.clone()) {
+                    host::open_link(&link);
+                }
+            }
+            _ => {}
+        }
     }
 }
 
@@ -232,5 +375,29 @@ mod tests {
         assert!(find(&terms, text, 0).is_none());
         let md = card(&terms.iter().find(|t| t.preview).unwrap().clone(), false);
         assert!(md.contains("preview") && md.contains("Где объяснили: 0.1 От source до executable › Как читать diagnostics"));
+    }
+
+    #[test]
+    fn lookup_and_search_work_on_any_spelling() {
+        let terms = parse_glossary(GLOSSARY);
+        assert_eq!(lookup(&terms, " Cargo Build ").unwrap().title, "`cargo build`");
+        assert_eq!(lookup(&terms, "`crate`").unwrap().title, "crate");
+        assert!(lookup(&terms, "linker").is_none());
+        let found: Vec<&str> = terms.iter().filter(|t| matches(t, "EXECUTABLE")).map(|t| t.title.as_str()).collect();
+        assert_eq!(found, ["binary crate", "`cargo build`"], "ищет и в определениях");
+        assert_eq!(short(&"а".repeat(120)).chars().count(), 91);
+    }
+
+    #[test]
+    fn panel_lists_terms_and_shows_the_selected_card() {
+        let mut t = Terms { terms: parse_glossary(GLOSSARY), glossary: Some("Глоссарий.md".into()), english: false, query: "crate".into(), selected: Some("crate".into()) };
+        let json = t.glossary_panel().to_json();
+        assert!(json.contains(r#""id":"open""#) && json.contains("binary crate") && !json.contains("кожурки"), "{json}");
+        t.panel_event("glossary", &Event { id: "query".into(), kind: EventKind::Change, value: "кожур".into() });
+        assert_eq!(t.query, "кожур");
+        let block = t.render_block("terms", "crate
+linker
+", "").unwrap().to_json();
+        assert!(block.contains("rustc") && block.contains("linker: нет в Глоссарии"), "{block}");
     }
 }
