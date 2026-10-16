@@ -5,13 +5,18 @@
 //! - **связанные папки** хранилища-курса (`host::linked_dirs`, право `linked:read`);
 //! - **правку заметки через программу**: отметить первый пункт «Практики» текущей заметки
 //!   (`host::toggle_task`) и дописать строку в `Вопросы/Пример.md` (`host::append_to_note`) —
-//!   несохранённые правки открытой заметки при этом не теряются.
+//!   несохранённые правки открытой заметки при этом не теряются (это умеет Holotype; Instar
+//!   заметки не правит).
+//!
+//! А ещё **подсказку при наведении** на слово `TODO` ([`Plugin::hover`]) и пункт **меню
+//! выделенного текста** «Пример: что выделено» (`menus`, `where = "selection"`): в Holotype —
+//! в режиме чтения и в редакторе, в Instar — в редакторе кода.
 //!
 //! Права в манифесте: `process = ["ping"]`, `files = ["vault:read", "vault:write",
 //! "linked:read"]`.
 
 use forma_plugin_api::ui::{self, Element, Event, EventKind, Tone};
-use forma_plugin_api::{CommandContext, Context, JobEvent, JobStream, PanelContext, Plugin, host, register_plugin};
+use forma_plugin_api::{CommandContext, Context, HoverRequest, HoverResult, JobEvent, JobStream, PanelContext, Plugin, host, register_plugin};
 
 const PANEL: &str = "demo";
 /// Больше строк вывода не держим: панель — не журнал.
@@ -49,6 +54,13 @@ pub fn first_open_task(text: &str) -> Option<String> {
         }
     }
     None
+}
+
+/// Слово `TODO` под символом `at` строки `text`: его начало и конец (в символах).
+pub fn todo_at(text: &str, at: usize) -> Option<(usize, usize)> {
+    let chars: Vec<char> = text.chars().collect();
+    (0..chars.len().saturating_sub(3)).find(|&i| (i..i + 4).contains(&at) && chars[i..i + 4].iter().copied().eq("TODO".chars()))
+        .map(|i| (i, i + 4))
 }
 
 impl Example {
@@ -107,9 +119,20 @@ impl Plugin for Example {
         Ok(Example { english: cx.language.starts_with("en"), ..Default::default() })
     }
 
-    fn command(&mut self, _id: &str, _cx: &CommandContext) -> Result<String, String> {
+    fn command(&mut self, id: &str, cx: &CommandContext) -> Result<String, String> {
+        // Пункт меню выделенного текста: что выделено — в панели.
+        if id == "example.selection" {
+            let shown: String = cx.selection.chars().take(60).collect();
+            self.message = format!("{} {}: «{shown}»", self.tr("Выделено символов —", "Selected characters:"), cx.selection.chars().count());
+        }
         host::open_panel(PANEL);
         Ok(String::new())
+    }
+
+    fn hover(&mut self, req: &HoverRequest) -> Option<HoverResult> {
+        let (start, end) = todo_at(&req.text, req.offset as usize)?;
+        let about = self.tr("задача на потом. Эту подсказку показывает «Пример плагина».", "a task for later. This hover comes from the example plugin.");
+        Some(HoverResult { start: start as u32, end: end as u32, markdown: format!("**TODO** — {about}\n\n`{}`", req.note) })
     }
 
     fn render_panel(&mut self, _panel: &str, cx: &PanelContext) -> Result<Element, String> {
@@ -189,5 +212,14 @@ mod tests {
         let text = "## Практика\n\n- [x] **Готово.** уже\n- [ ] **Свой package.** Создай\n\n## Дальше\n- [ ] **Не то.**\n";
         assert_eq!(first_open_task(text).as_deref(), Some("Свой package."));
         assert!(first_open_task("## Практика\n- [x] **Всё.**\n").is_none());
+    }
+
+    #[test]
+    fn todo_is_found_under_the_pointer() {
+        let line = "    // TODO: свой модификатор";
+        assert_eq!(todo_at(line, 7), Some((7, 11)));
+        assert_eq!(todo_at(line, 10), Some((7, 11)));
+        assert_eq!(todo_at(line, 11), None);
+        assert_eq!(todo_at("Todo", 0), None);
     }
 }

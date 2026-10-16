@@ -3,10 +3,10 @@ id = "example"
 name = "Пример плагина"
 version = "0.1.0"
 authors = ["Мьюри", "Холо"]
-description = "Пример для авторов плагинов: панель, программа в фоне с выводом по строкам и остановкой, связанные папки хранилища, отметка пункта «Практики» и запись в заметку."
+description = "Пример для авторов плагинов: панель, программа в фоне с выводом по строкам и остановкой, связанные папки хранилища, отметка пункта «Практики» и запись в заметку, подсказка при наведении и пункт меню выделенного текста. Работает в Holotype и Instar."
 license = "MIT"
 icon = "plugin"
-apps = ["holotype"]
+apps = ["holotype", "instar"]
 api = "^1.2"
 
 [permissions]
@@ -15,8 +15,10 @@ files = ["vault:read", "vault:write", "linked:read"]
 
 [contributes]
 panels = [{ id = "demo", title = "Пример API", icon = "plugin" }]
-commands = [{ id = "example.open", title = "Открыть пример API" }]
+commands = [{ id = "example.open", title = "Открыть пример API" }, { id = "example.selection", title = "Пример: что выделено" }]
+menus = [{ where = "selection", command = "example.selection" }]
+hovers = [{ id = "todo", title = "TODO" }]
 
 [code]
 wasm = "example.wasm"
-activate = ["panel:demo", "command:example.open"]
+activate = ["panel:demo", "command:example.open", "command:example.selection", "hover:todo"]
